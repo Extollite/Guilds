@@ -1,0 +1,6 @@
+"1s":
+  type: 0
+  name: "Kill 10 cows"
+  exp: 10
+  components:
+    "1": 1

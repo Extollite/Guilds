@@ -1,0 +1,8 @@
+name: Guilds
+main: pl.extollite.guilds.Guilds
+version: "${pom.version}"
+api: ["1.0.9"]
+load: POSTWORLD
+authors: ["Extollite"]
+description: Nukkit guilds plugin
+prefix: "Guilds"

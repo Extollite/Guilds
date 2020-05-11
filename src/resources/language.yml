@@ -1,0 +1,78 @@
+cmd-no-permission: "You don't have permission to use this command!"
+
+quest-active-content: "You need to "
+quest-active-mob: "kill"
+quest-active-break: "break"
+quest-active-collect: "collect"
+
+quest-collect-pick: "Pick item to donate: "
+quest-collect-pick-amount: "Pick amount to donate: "
+
+quest-collect-donate: "Donate items"
+
+quest-info:
+  - "Name: %name%"
+  - "Exp: %exp%"
+  - "Type: %type%"
+  - "Components: %components%"
+
+quest-active-different: "Your guild have active quest!"
+
+window-close: "Close"
+window-back: "Back"
+window-accept: "Accept"
+window-decline: "Decline"
+
+player-donate-donthave: "You don't have this item!"
+
+create-title: "Create your guild"
+create-content: "You need %money% to create guild."
+create-tag-label: "Guild TAG %tag_size% A-Z letters."
+create-full-name: "Guild Full Name max. %name_size% alphanumeric symbols."
+create-success: "You created guild %name% with tag %tag%."
+create-success-announce: "%player% created guild %name% with tag %tag%."
+
+board-content: "Choose one option: "
+board-info: "Info"
+board-invite: "Invite"
+board-donate: "Donate"
+board-delete: "Delete"
+board-promote: "Promote/Demote"
+board-kick: "Kick"
+board-quest: "Quest"
+board-shop: "Shop"
+
+invite-content: "Choose player: "
+invite-in-guild: "This player is in guild!"
+invite-expire: "Invitation expired!"
+invite-pending: "Player has pending invitation!"
+invite-invited: "Player invited!"
+invite-size: "Guild reached max size!"
+invite-money: "Adding next member costs %money%!"
+invite-decline: "Player declined your invitation!"
+invite-invite-get: "You are invited to %tag% by %player%! Use /guild accept to accept invitation!"
+invite-window: "You are invited to %tag% by %player%! What you want to do?"
+
+donate-amount: "Choose amount to donate"
+
+delete-content: "Do you accept deleting guild?"
+
+create-incorrect-tag: "Guild TAG incorrect, only %tag_size% A-Z letters."
+create-same-tag: "Guild with that TAG exist!"
+create-incorrect-name: "Guild Name incorrect, only %name_size% A-Z letters."
+create-not-enough-money: "You don't have %money% to create guild."
+
+cmd-create-in-guild: "You are in guild!"
+
+cmd-info-no-guild: "You are not in any guild!"
+
+guild-info:
+  - "TAG: %tag%"
+  - "Name: %name%"
+  - "Current money: %money%"
+  - "Level: %level%/%max_level%"
+  - "Exp: %exp%/%need_exp%"
+  - "Active quest: %quest_name%"
+  - "Last quest finished: %date%"
+  - "Members: %members%"
+
