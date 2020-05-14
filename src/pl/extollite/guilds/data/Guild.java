@@ -1,17 +1,21 @@
 package pl.extollite.guilds.data;
 
 import cn.nukkit.Player;
-import cn.nukkit.item.Item;
 import cn.nukkit.utils.Config;
 import cn.nukkit.utils.ConfigSection;
 import lombok.Getter;
 import pl.extollite.guilds.Guilds;
+import pl.extollite.guilds.manager.GuildManager;
 import pl.extollite.guilds.quest.Quest;
 
 import static pl.extollite.guilds.manager.GuildManager.MemberLevel;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.function.Function;
+import java.util.function.ToDoubleFunction;
+import java.util.function.ToIntFunction;
+import java.util.function.ToLongFunction;
 import java.util.stream.Collectors;
 
 @Getter
@@ -59,11 +63,11 @@ public class Guild {
         return addMember(player.getUniqueId());
     }
 
-    public void removeMember(UUID uuid){
+    public void removeMember(UUID uuid) {
         members.remove(uuid);
     }
 
-    public void removeMember(Player player){
+    public void removeMember(Player player) {
         removeMember(player.getUniqueId());
     }
 
@@ -92,6 +96,7 @@ public class Guild {
         }
         if (activeQuest != null)
             guilds.set(tag + ".active-quest", activeQuest.serialize());
+        GuildManager.sortGuilds();
         guilds.save(true);
     }
 
@@ -137,7 +142,7 @@ public class Guild {
         deposit += amount;
     }
 
-    public String info() {
+    public String fullInfo() {
         return ConfigData.guild_info.replace("%tag%", this.tag)
                 .replace("%name%", this.fullName)
                 .replace("%money%", String.valueOf(this.deposit))
@@ -150,10 +155,25 @@ public class Guild {
                 .replace("%members%", members.entrySet().stream().sorted(Map.Entry.<UUID, MemberLevel>comparingByValue().reversed()).map(o -> Guilds.getInstance().getServer().getOfflinePlayer(o.getKey()).getName() + ": " + o.getValue()).collect(Collectors.joining("\n ", "\n ", "")));
     }
 
+    public String info() {
+        return ConfigData.guild_info.replace("%tag%", this.tag)
+                .replace("%name%", this.fullName)
+                .replace("%level%", String.valueOf(this.level))
+                .replace("%max_level%", String.valueOf(ConfigData.maxLevel))
+                .replace("%exp%", String.valueOf(this.exp))
+                .replace("%need_exp%", String.valueOf(ConfigData.levels.get(this.level)))
+                .replace("%members%", members.entrySet().stream().sorted(Map.Entry.<UUID, MemberLevel>comparingByValue().reversed()).map(o -> Guilds.getInstance().getServer().getOfflinePlayer(o.getKey()).getName() + ": " + o.getValue()).collect(Collectors.joining("\n ", "\n ", "")));
+    }
+
     public boolean setActiveQuest(Quest activeQuest) {
-        if(this.activeQuest != null)
+        if (this.activeQuest != null)
             return false;
         this.activeQuest = activeQuest;
         return true;
     }
+
+    public void setDeposit(double deposit) {
+        this.deposit = deposit;
+    }
 }
+

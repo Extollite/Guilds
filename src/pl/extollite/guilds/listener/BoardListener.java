@@ -31,7 +31,7 @@ public class BoardListener implements Listener {
             Guild guild = GuildManager.getPlayerGuild(player);
             switch (response.getClickedButtonId()) {
                 case 0:
-                    player.showFormWindow(new InfoGuildWindow(guild, player));
+                    player.showFormWindow(new FullInfoGuildWindow(guild, player));
                     break;
                 case 1:
                     if(guild.getActiveQuest() != null){
@@ -44,6 +44,7 @@ public class BoardListener implements Listener {
                     player.showFormWindow(new DonateGuildWindow(player));
                     break;
                 case 3:
+                    player.showFormWindow(new ShopGuildWindow(guild));
                     break;
                 case 4:
                     player.showFormWindow(new InviteGuildWindow());
@@ -58,7 +59,7 @@ public class BoardListener implements Listener {
                     player.showFormWindow(new DeleteGuildWindow());
                     break;
             }
-        } else if (event.getWindow() instanceof InfoGuildWindow) {
+        } else if (event.getWindow() instanceof FullInfoGuildWindow) {
             FormResponseSimple response = (FormResponseSimple) event.getResponse();
             if (response.getClickedButtonId() == 0) {
                 player.showFormWindow(new BoardGuildWindow(GuildManager.getPlayerGuild(player), player));

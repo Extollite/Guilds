@@ -24,5 +24,10 @@ name-size: 20
 
 invitation-expire: 30
 
-
+shop:
+  1s:
+    name: "Vote key for everyone"
+    cost: 200
+    commands:
+      - "key \"%player_name%\" vote"
 

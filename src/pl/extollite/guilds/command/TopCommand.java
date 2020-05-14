@@ -7,18 +7,18 @@ import cn.nukkit.permission.Permission;
 import pl.extollite.guilds.Guilds;
 import pl.extollite.guilds.data.ConfigData;
 import pl.extollite.guilds.manager.GuildManager;
-import pl.extollite.guilds.window.manage.BoardGuildWindow;
+import pl.extollite.guilds.window.manage.TopGuildWindow;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class BoardCommand extends CommandManager {
+public class TopCommand extends CommandManager {
 
-    public BoardCommand() {
-        super("guildboard", "", "/guild board");
+    public TopCommand() {
+        super("guildtop", "", "/guild top");
         Map<String, CommandParameter[]> parameters = new HashMap<>();
         this.setCommandParameters(parameters);
-        Permission permission = new Permission("guild.command.board", null, Permission.DEFAULT_TRUE);
+        Permission permission = new Permission("guild.command.top", null, Permission.DEFAULT_TRUE);
         Guilds.getInstance().getServer().getPluginManager().addPermission(permission);
         this.setPermission(permission.getName());
     }
@@ -26,11 +26,7 @@ public class BoardCommand extends CommandManager {
     public boolean execute(CommandSender sender, String label, String[] args) {
         if (sender instanceof Player) {
             Player p = (Player) sender;
-           if(GuildManager.hasPlayerGuild(p)){
-               p.showFormWindow(new BoardGuildWindow(GuildManager.getPlayerGuild(p), p));
-                return true;
-           }
-            p.sendMessage(ConfigData.prefix+ConfigData.cmd_info_no_guild);
+           p.showFormWindow(new TopGuildWindow());
         }
         return true;
     }

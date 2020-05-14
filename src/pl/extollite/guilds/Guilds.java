@@ -2,10 +2,8 @@ package pl.extollite.guilds;
 
 import cn.nukkit.plugin.PluginBase;
 import cn.nukkit.utils.TextFormat;
-import pl.extollite.guilds.command.AcceptCommand;
-import pl.extollite.guilds.command.CreateCommand;
-import pl.extollite.guilds.command.GuildCommand;
-import pl.extollite.guilds.command.BoardCommand;
+import com.creeperface.nukkit.placeholderapi.api.PlaceholderAPI;
+import pl.extollite.guilds.command.*;
 import pl.extollite.guilds.data.ConfigData;
 import pl.extollite.guilds.listener.*;
 import pl.extollite.guilds.listener.EventListener;
@@ -29,6 +27,8 @@ public class Guilds extends PluginBase {
 
     private GuildCommand guildCommand;
 
+    private PlaceholderAPI papi = PlaceholderAPI.getInstance();
+
     @Override
     public void onEnable() {
         this.saveDefaultConfig();
@@ -44,7 +44,9 @@ public class Guilds extends PluginBase {
         this.getServer().getPluginManager().registerEvents(new CreateWindowListener(), this);
         this.getServer().getPluginManager().registerEvents(new AcceptWindowListener(), this);
         this.getServer().getPluginManager().registerEvents(new BoardListener(), this);
+        this.getServer().getPluginManager().registerEvents(new ShopListener(), this);
         registerCommand();
+        registerPlaceholders();
     }
 
     private void registerCommand(){
@@ -53,5 +55,41 @@ public class Guilds extends PluginBase {
         guildCommand.registerCommand(new CreateCommand());
         guildCommand.registerCommand(new BoardCommand());
         guildCommand.registerCommand(new AcceptCommand());
+        guildCommand.registerCommand(new TopCommand());
+        guildCommand.registerCommand(new InfoCommand());
+    }
+
+    public void registerPlaceholders(){
+        for(int i = 0; i < 10; i++){
+            int finalI = i;
+            papi.staticPlaceholder("guild_top_tag_"+(finalI+1), () -> {
+                if(GuildManager.getSorted().size() > finalI){
+                    return GuildManager.getSorted().get(finalI).getTag();
+                }
+                return "";
+            }, 1, true);
+            papi.staticPlaceholder("guild_top_name_"+(finalI+1), () -> {
+                if(GuildManager.getSorted().size() > finalI){
+                    return GuildManager.getSorted().get(finalI).getFullName();
+                }
+                return "";
+            }, 1, true);
+            papi.staticPlaceholder("guild_top_level_"+(finalI+1), () -> {
+                if(GuildManager.getSorted().size() > finalI){
+                    return GuildManager.getSorted().get(finalI).getLevel();
+                }
+                return "";
+            }, 1, true);
+            papi.staticPlaceholder("guild_top_exp_"+(finalI+1), () -> {
+                if(GuildManager.getSorted().size() > finalI){
+                    return GuildManager.getSorted().get(finalI).getExp();
+                }
+                return "";
+            }, 1, true);
+        }
+        papi.visitorSensitivePlaceholder("player_guild_tag", player -> GuildManager.getPlayerGuild(player).getTag());
+        papi.visitorSensitivePlaceholder("player_guild_name", player -> GuildManager.getPlayerGuild(player).getFullName());
+        papi.visitorSensitivePlaceholder("player_guild_level", player -> GuildManager.getPlayerGuild(player).getLevel());
+        papi.visitorSensitivePlaceholder("player_guild_exp", player -> GuildManager.getPlayerGuild(player).getExp());
     }
 }

@@ -6,9 +6,9 @@ import cn.nukkit.form.window.FormWindowSimple;
 import pl.extollite.guilds.data.ConfigData;
 import pl.extollite.guilds.data.Guild;
 
-public class InfoGuildWindow extends FormWindowSimple {
-    public InfoGuildWindow(Guild guild) {
-        super(guild.getTag(), guild.info());
+public class FullInfoGuildWindow extends FormWindowSimple {
+    public FullInfoGuildWindow(Guild guild, Player player) {
+        super(guild.getTag(), guild.fullInfo());
         this.addButton(new ElementButton(ConfigData.window_back));
         this.addButton(new ElementButton(ConfigData.window_close));
     }

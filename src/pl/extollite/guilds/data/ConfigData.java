@@ -3,10 +3,7 @@ package pl.extollite.guilds.data;
 import cn.nukkit.utils.Config;
 import pl.extollite.guilds.Guilds;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.StringJoiner;
+import java.util.*;
 
 public class ConfigData {
     public static String prefix;
@@ -20,6 +17,8 @@ public class ConfigData {
     public static int guild_cost;
     public static int guild_max_size;
     public static Map<Integer, Double> guild_join_cost = new HashMap<>();
+
+    public static Map<String, Map.Entry<Double, List<String>>> shops = new HashMap<>();
 
     public static int tag_size;
     public static int name_size;
@@ -59,6 +58,16 @@ public class ConfigData {
     public static String invite_size;
     public static String invite_money;
     public static String invite_window;
+
+    public static String top_title;
+    public static String top_content;
+
+    public static String guild_info_title;
+    public static String guild_info_content;
+
+    public static String shop_content;
+    public static String shop_price;
+    public static String shop_not_enough_money;
 
     public static String donate_amount;
 
@@ -101,6 +110,11 @@ public class ConfigData {
 
         guild_cost = cfg.getInt("guild-cost");
         guild_max_size = cfg.getInt("guild-max-size");
+
+        for(String key : cfg.getSection("shop").getKeys(false)){
+            shops.put(cfg.getString("shop."+key+".name"), new AbstractMap.SimpleImmutableEntry<>(cfg.getDouble("shop."+key+".cost"), cfg.getStringList("shop."+key+".commands")));
+        }
+
         for(String key : cfg.getSection("guild-join-cost").getKeys(false)){
             int count = Integer.parseInt(key);
             guild_join_cost.put(count, cfg.getDouble("guild-join-cost."+key));
@@ -149,6 +163,16 @@ public class ConfigData {
         invite_size = lang.getString("invite-size");
         invite_money = lang.getString("invite-money");
         invite_window = lang.getString("invite-window");
+
+        top_title = lang.getString("top-title");
+        top_content = lang.getString("top-content");
+
+        guild_info_title = lang.getString("guild-info-title");
+        guild_info_title = lang.getString("guild-info-content");
+
+        shop_content = lang.getString("shop-content");
+        shop_price = lang.getString("shop-price");
+        shop_not_enough_money = lang.getString("shop-not-enough-money");
 
         donate_amount = lang.getString("donate-amount");
 

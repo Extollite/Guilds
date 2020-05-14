@@ -58,6 +58,13 @@
             -->
         </dependency>
         <dependency>
+            <groupId>cn.yescallop</groupId>
+            <artifactId>essentialsnk</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/lib/EssentialsNK.jar</systemPath>
+        </dependency>
+        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.12</version>
