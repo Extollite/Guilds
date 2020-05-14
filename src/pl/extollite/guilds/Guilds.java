@@ -91,5 +91,6 @@ public class Guilds extends PluginBase {
         papi.visitorSensitivePlaceholder("player_guild_name", player -> GuildManager.getPlayerGuild(player).getFullName());
         papi.visitorSensitivePlaceholder("player_guild_level", player -> GuildManager.getPlayerGuild(player).getLevel());
         papi.visitorSensitivePlaceholder("player_guild_exp", player -> GuildManager.getPlayerGuild(player).getExp());
+        papi.visitorSensitivePlaceholder("player_guild_rank", player -> GuildManager.getPlayerGuild(player).getMemberLevel(player));
     }
 }
