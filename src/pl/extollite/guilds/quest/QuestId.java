@@ -4,6 +4,7 @@ import cn.nukkit.entity.Entity;
 import cn.nukkit.level.Position;
 import cn.nukkit.utils.ConfigSection;
 import lombok.Getter;
+import pl.extollite.guilds.utils.MobsNames;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,11 +26,12 @@ public class QuestId extends Quest{
     public ConfigSection serialize() {
         String id = this.getId();
         ConfigSection section = new ConfigSection();
-        section.set(id + ".name", getName());
-        section.set(id + ".type", getType());
-        section.set(id + ".exp", getExp());
+        section.set("name", getName());
+        section.set("type", getType().getId());
+        section.set("exp", getExp());
+        section.set("id", id);
         for(Map.Entry<Object, Integer> entry : components.entrySet()){
-            section.set(id+".components."+entry.getKey(), entry.getValue());
+            section.set("components."+entry.getKey(), entry.getValue());
         }
         return section;
     }
@@ -38,7 +40,7 @@ public class QuestId extends Quest{
     public String getComponentsString() {
         StringJoiner joiner = new StringJoiner("\n");
         for(Map.Entry<Object, Integer> entry : components.entrySet()){
-            joiner.add(Entity.createEntity((Integer)entry.getKey(), new Position(0,0,0)).getName()+": "+entry.getValue());
+            joiner.add(MobsNames.getName((Integer)entry.getKey()) +": "+entry.getValue());
         }
         return joiner.toString();
     }

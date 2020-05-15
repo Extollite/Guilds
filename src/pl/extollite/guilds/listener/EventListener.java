@@ -90,13 +90,13 @@ public class EventListener implements Listener {
                 }
             }
         } else {
-            if(player.getEffect(Effect.REGENERATION).getAmplifier() == 0){
+            if(player.hasEffect(Effect.REGENERATION) && player.getEffect(Effect.REGENERATION).getAmplifier() == 0){
                 player.removeEffect(Effect.REGENERATION);
             }
-            if(player.getEffect(Effect.STRENGTH).getAmplifier() == 0){
+            if(player.hasEffect(Effect.STRENGTH) && player.getEffect(Effect.STRENGTH).getAmplifier() == 0){
                 player.removeEffect(Effect.STRENGTH);
             }
-            if(player.getEffect(Effect.HASTE).getAmplifier() == 0){
+            if(player.hasEffect(Effect.HASTE) && player.getEffect(Effect.HASTE).getAmplifier() == 0){
                 player.removeEffect(Effect.HASTE);
             }
         }

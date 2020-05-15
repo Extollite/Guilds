@@ -5,6 +5,7 @@ import cn.nukkit.utils.TextFormat;
 import com.creeperface.nukkit.placeholderapi.api.PlaceholderAPI;
 import pl.extollite.guilds.command.*;
 import pl.extollite.guilds.data.ConfigData;
+import pl.extollite.guilds.data.Guild;
 import pl.extollite.guilds.listener.*;
 import pl.extollite.guilds.listener.EventListener;
 import pl.extollite.guilds.manager.GuildManager;
@@ -24,6 +25,8 @@ public class Guilds extends PluginBase {
     public static Guilds getInstance() {
         return instance;
     }
+
+    public static List<Guild> immunity = new ArrayList<>();
 
     private GuildCommand guildCommand;
 
@@ -57,6 +60,7 @@ public class Guilds extends PluginBase {
         guildCommand.registerCommand(new AcceptCommand());
         guildCommand.registerCommand(new TopCommand());
         guildCommand.registerCommand(new InfoCommand());
+        guildCommand.registerCommand(new LeaveCommand());
     }
 
     public void registerPlaceholders(){
@@ -92,5 +96,13 @@ public class Guilds extends PluginBase {
         papi.visitorSensitivePlaceholder("player_guild_level", player -> GuildManager.getPlayerGuild(player).getLevel());
         papi.visitorSensitivePlaceholder("player_guild_exp", player -> GuildManager.getPlayerGuild(player).getExp());
         papi.visitorSensitivePlaceholder("player_guild_rank", player -> GuildManager.getPlayerGuild(player).getMemberLevel(player));
+    }
+
+    public static void putImmunity(Guild guild) {
+        immunity.add(guild);
+    }
+
+    public static boolean hasImmunity(Guild guild) {
+        return immunity.contains(guild);
     }
 }

@@ -12,6 +12,6 @@ import java.util.Arrays;
 public class PromoteGuildWindow extends FormWindowCustom {
     public PromoteGuildWindow(String name, int defaultLevel) {
         super(ConfigData.board_promote);
-        this.addElement(new ElementDropdown(name, Arrays.asList("Member", "King", "CoLeader", "Leader"), defaultLevel));
+        this.addElement(new ElementDropdown(name, Arrays.asList("Member", "King", "CoLeader"), defaultLevel));
     }
 }

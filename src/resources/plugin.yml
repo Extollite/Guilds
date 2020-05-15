@@ -6,3 +6,7 @@ load: POSTWORLD
 authors: ["Extollite"]
 description: Nukkit guilds plugin
 prefix: "Guilds"
+depend:
+  - PlaceholderAPI
+  - EconomyAPI
+  - EssentialsNK

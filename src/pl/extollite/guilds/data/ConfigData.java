@@ -38,6 +38,9 @@ public class ConfigData {
     public static String create_success;
     public static String create_success_announce;
 
+    public static String delete_success;
+    public static String delete_success_announce;
+
     public static String board_content;
     public static String board_info;
     public static String board_invite;
@@ -58,6 +61,7 @@ public class ConfigData {
     public static String invite_size;
     public static String invite_money;
     public static String invite_window;
+    public static String invite_success_announce;
 
     public static String top_title;
     public static String top_content;
@@ -70,8 +74,12 @@ public class ConfigData {
     public static String shop_not_enough_money;
 
     public static String donate_amount;
+    public static String donate_success;
+    public static String donate_not_enough_money;
 
     public static String delete_content;
+
+    public static String leave_success_announce;
 
     public static String cmd_no_permission;
 
@@ -86,6 +94,12 @@ public class ConfigData {
     public static String quest_active_mob;
     public static String quest_active_break;
     public static String quest_active_collect;
+
+    public static String quest_pick_content;
+
+    public static String quest_success;
+
+    public static String quest_finished;
 
     public static String quest_collect_donate;
     public static String quest_collect_pick;
@@ -143,6 +157,9 @@ public class ConfigData {
         create_success = lang.getString("create-success");
         create_success_announce = lang.getString("create-success-announce");
 
+        delete_success = lang.getString("delete-success");
+        delete_success_announce = lang.getString("delete-success-announce");
+
         board_content = lang.getString("board-content");
         board_info = lang.getString("board-info");
         board_invite = lang.getString("board-invite");
@@ -163,20 +180,25 @@ public class ConfigData {
         invite_size = lang.getString("invite-size");
         invite_money = lang.getString("invite-money");
         invite_window = lang.getString("invite-window");
+        invite_success_announce = lang.getString("invite-success-announce");
 
         top_title = lang.getString("top-title");
         top_content = lang.getString("top-content");
 
         guild_info_title = lang.getString("guild-info-title");
-        guild_info_title = lang.getString("guild-info-content");
+        guild_info_content = lang.getString("guild-info-content");
 
         shop_content = lang.getString("shop-content");
         shop_price = lang.getString("shop-price");
         shop_not_enough_money = lang.getString("shop-not-enough-money");
 
         donate_amount = lang.getString("donate-amount");
+        donate_success = lang.getString("donate-success");
+        donate_not_enough_money = lang.getString("donate-not-enough-money");
 
         delete_content = lang.getString("delete-content");
+
+        leave_success_announce = lang.getString("leave-success-announce");
 
         quest_active_content = lang.getString("quest-active-content");
         quest_active_mob = lang.getString("quest-active-mob");
@@ -186,6 +208,12 @@ public class ConfigData {
         quest_collect_donate = lang.getString("quest-collect-donate");
         quest_collect_pick = lang.getString("quest-collect-pick");
         quest_collect_pick_amount = lang.getString("quest-collect-pick-amount");
+
+        quest_pick_content = lang.getString("quest-pick-content");
+
+        quest_success = lang.getString("quest-success");
+
+        quest_finished = lang.getString("quest-finished");
 
         quest_active_different = lang.getString("quest-active-different");
 

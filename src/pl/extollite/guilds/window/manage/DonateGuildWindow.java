@@ -11,6 +11,6 @@ import pl.extollite.guilds.data.ConfigData;
 public class DonateGuildWindow extends FormWindowCustom {
     public DonateGuildWindow(Player player) {
         super(ConfigData.board_donate);
-        this.addElement(new ElementSlider(ConfigData.donate_amount, 0, (float)EconomyAPI.getInstance().myMoney(player)));
+        this.addElement(new ElementSlider(ConfigData.donate_amount, 0, (float)EconomyAPI.getInstance().myMoney(player), 1));
     }
 }

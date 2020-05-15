@@ -3,4 +3,10 @@
   name: "Kill 10 cows"
   exp: 10
   components:
-    "1": 1
+    "11": 10
+"2s":
+  type: 2
+  name: "Collect 2 leather"
+  exp: 10
+  components:
+    "334:0": 2

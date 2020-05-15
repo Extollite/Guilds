@@ -35,7 +35,7 @@ public abstract class Quest {
             if(currAmount <= amount){
                 components.remove(key);
             } else {
-                components.put(id, currAmount - amount);
+                components.put(key, currAmount - amount);
             }
             if(components.isEmpty())
                 return true;

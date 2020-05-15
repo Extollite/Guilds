@@ -10,6 +10,12 @@ quest-collect-pick-amount: "Pick amount to donate: "
 
 quest-collect-donate: "Donate items"
 
+quest-pick-content: "Choose next quest: "
+
+quest-success: "You choose quest %name%"
+
+quest-finished: "Your guild finished quest %name% and gained %exp%!"
+
 quest-info:
   - "Name: %name%"
   - "Exp: %exp%"
@@ -32,6 +38,9 @@ create-full-name: "Guild Full Name max. %name_size% alphanumeric symbols."
 create-success: "You created guild %name% with tag %tag%."
 create-success-announce: "%player% created guild %name% with tag %tag%."
 
+delete-success: "You deleted guild %name% with tag %tag%."
+delete-success-announce: "%player% deleted guild %name% with tag %tag%."
+
 board-content: "Choose one option: "
 board-info: "Info"
 board-invite: "Invite"
@@ -53,7 +62,11 @@ invite-decline: "Player declined your invitation!"
 invite-invite-get: "You are invited to %tag% by %player%! Use /guild accept to accept invitation!"
 invite-window: "You are invited to %tag% by %player%! What you want to do?"
 
+invite-success-announce: "%player% joined guild %tag%."
+
 donate-amount: "Choose amount to donate"
+donate-success: "Donated %money%!"
+donate-not-enough-money: "You don't have enough money!"
 
 delete-content: "Do you accept deleting guild?"
 
@@ -75,6 +88,8 @@ shop-not-enough-money: "Your guild don't have enough money!"
 cmd-create-in-guild: "You are in guild!"
 
 cmd-info-no-guild: "You are not in any guild!"
+
+leave-success-announce: "%player% left guild %tag%."
 
 guild-info:
   - "TAG: %tag%"

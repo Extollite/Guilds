@@ -28,11 +28,12 @@ public class QuestIdMeta extends Quest {
     public ConfigSection serialize() {
         String id = this.getId();
         ConfigSection section = new ConfigSection();
-        section.set(id + ".name", getName());
-        section.set(id + ".type", getType());
-        section.set(id + ".exp", getExp());
+        section.set("name", getName());
+        section.set("type", getType().getId());
+        section.set("exp", getExp());
+        section.set("id", id);
         for(Map.Entry<Object, Integer> entry : components.entrySet()){
-            section.set(id+".components."+entry.getKey().toString(), entry.getValue());
+            section.set("components."+entry.getKey().toString(), entry.getValue());
         }
         return section;
     }

@@ -46,6 +46,7 @@ public class InviteManager {
             return;
         }
         guild.addMember(player);
+        Guilds.getInstance().getServer().broadcastMessage(ConfigData.prefix+ConfigData.invite_success_announce.replace("%player%", player.getName()).replace("%tag%", guild.getTag()));
         guild.save();
     }
 

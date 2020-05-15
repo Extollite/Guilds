@@ -28,7 +28,7 @@ public class QuestWindowListener implements Listener {
             return;
         if(event.getWindow() instanceof QuestActiveWindow){
             FormResponseSimple response = (FormResponseSimple)event.getResponse();
-            if(response.getClickedButton().getText().equals(ConfigData.quest_active_collect)){
+            if(response.getClickedButton().getText().equals(ConfigData.quest_collect_donate)){
                 event.getPlayer().showFormWindow(new QuestDonatePickWindow(GuildManager.getPlayerGuild(event.getPlayer()).getActiveQuest(), event.getPlayer()));
             }
         } else if (event.getWindow() instanceof QuestDonatePickWindow){
@@ -93,12 +93,13 @@ public class QuestWindowListener implements Listener {
             Item item = Item.fromString(name);
             Player player = event.getPlayer();
             Quest quest = GuildManager.getPlayerGuild(player).getActiveQuest();
-            if(((QuestIdMeta) quest).removeComponent(item.getId(), item.getDamage())){
+            if(((QuestIdMeta) quest).removeComponent(item.getId(), item.getDamage(), amount)){
                 GuildManager.getPlayerGuild(player).finalizeQuest();
             }
             GuildManager.getPlayerGuild(event.getPlayer()).save(false);
             Map<Integer, Item> items = player.getInventory().all(item);
             if(!items.isEmpty()){
+                System.out.println("1sd");
                 for(Map.Entry<Integer, Item> itemInv : items.entrySet()){
                     if(amount >= itemInv.getValue().getCount()){
                         amount -= itemInv.getValue().getCount();
@@ -113,6 +114,7 @@ public class QuestWindowListener implements Listener {
                         break;
                 }
             }
+            player.sendAllInventories();
         } else if(event.getWindow() instanceof QuestPickWindow){
             FormResponseSimple response = (FormResponseSimple)event.getResponse();
             String name = response.getClickedButton().getText();
@@ -136,7 +138,10 @@ public class QuestWindowListener implements Listener {
                 if(!guild.setActiveQuest(quest)){
                     player.sendMessage(ConfigData.prefix+ConfigData.quest_active_different);
                 }
+                player.sendMessage(ConfigData.prefix+ConfigData.quest_success.replace("%name%", quest.getName()));
                 guild.save(false);
+            } else {
+                player.showFormWindow(new BoardGuildWindow(GuildManager.getPlayerGuild(player), player));
             }
         }
     }

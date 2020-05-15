@@ -25,7 +25,7 @@ public class Guild {
     private Map<UUID, MemberLevel> members = new HashMap<>();
     private double deposit = 0;
     private Quest activeQuest;
-    private String lastQuest;
+    private String lastQuest = "";
     private Date questFinished = new Date(System.currentTimeMillis() - 1);
     private int level = 1;
     private int exp = 0;
@@ -94,8 +94,10 @@ public class Guild {
             }
             guilds.set(tag + ".members", memberSection);
         }
-        if (activeQuest != null)
+        if(activeQuest != null)
             guilds.set(tag + ".active-quest", activeQuest.serialize());
+        else
+            guilds.set(tag + ".active-quest", null);
         GuildManager.sortGuilds();
         guilds.save(true);
     }
@@ -123,9 +125,14 @@ public class Guild {
 
     public void finalizeQuest() {
         questFinished = new Date(System.currentTimeMillis());
-        addExp(activeQuest.getExp());
         lastQuest = activeQuest.getId();
+        for(UUID uuid : members.keySet()){
+            Optional<Player> player = Guilds.getInstance().getServer().getPlayer(uuid);
+            player.ifPresent(value -> value.sendMessage(ConfigData.prefix + ConfigData.quest_finished.replace("%name%", activeQuest.getName()).replace("%exp%", String.valueOf(activeQuest.getExp()))));
+        }
+        int exp = activeQuest.getExp();
         activeQuest = null;
+        addExp(exp);
     }
 
     public MemberLevel getMemberLevel(UUID uuid) {

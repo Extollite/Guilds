@@ -9,6 +9,7 @@ import cn.nukkit.form.response.FormResponseCustom;
 import cn.nukkit.form.response.FormResponseModal;
 import cn.nukkit.form.response.FormResponseSimple;
 import cn.nukkit.utils.Config;
+import me.onebone.economyapi.EconomyAPI;
 import pl.extollite.guilds.Guilds;
 import pl.extollite.guilds.data.ConfigData;
 import pl.extollite.guilds.data.Guild;
@@ -67,10 +68,13 @@ public class BoardListener implements Listener {
         } else if (event.getWindow() instanceof DonateGuildWindow) {
             FormResponseCustom response = (FormResponseCustom) event.getResponse();
             float amount = response.getSliderResponse(0);
-            if (amount > 0) {
+            if(amount > 0 && EconomyAPI.getInstance().reduceMoney(player, amount) == EconomyAPI.RET_SUCCESS){
                 GuildManager.getPlayerGuild(player).donate(amount);
+                GuildManager.getPlayerGuild(player).save();
+                player.sendMessage(ConfigData.prefix+ConfigData.donate_success.replace("%money%", String.valueOf(amount)));
+                return;
             }
-            GuildManager.getPlayerGuild(player).save();
+            player.sendMessage(ConfigData.prefix+ConfigData.donate_not_enough_money);
         } else if (event.getWindow() instanceof InviteGuildWindow) {
             FormResponseSimple response = (FormResponseSimple) event.getResponse();
             String name = response.getClickedButton().getText();
@@ -95,9 +99,11 @@ public class BoardListener implements Listener {
                 return;
             }
             UUID uuid = Guilds.getInstance().getServer().getOfflinePlayer(name).getUniqueId();
-            GuildManager.getPlayerGuild(player).removeMember(uuid);
+            Guild guild = GuildManager.getPlayerGuild(player);
+            guild.removeMember(uuid);
             GuildManager.removePlayerGuild(uuid);
-            GuildManager.getPlayerGuild(player).save();
+            guild.save();
+            Guilds.getInstance().getServer().broadcastMessage(ConfigData.prefix+ConfigData.leave_success_announce.replace("%player%", player.getName()).replace("%tag%", guild.getTag()));
         } else if (event.getWindow() instanceof PromotePickGuildWindow) {
             FormResponseSimple response = (FormResponseSimple) event.getResponse();
             String name = response.getClickedButton().getText();
@@ -127,6 +133,8 @@ public class BoardListener implements Listener {
                 Config guilds = new Config(Guilds.getInstance().getDataFolder() + "/guilds.yml", Config.YAML);
                 guilds.remove(guild.getTag());
                 guilds.save(true);
+                player.sendMessage(ConfigData.prefix+ConfigData.delete_success.replace("%name%", guild.getFullName()).replace("%tag%", guild.getTag()));
+                Guilds.getInstance().getServer().broadcastMessage(ConfigData.prefix+ConfigData.delete_success_announce.replace("%name%", guild.getFullName()).replace("%tag%", guild.getTag()));
             }
         }
     }
