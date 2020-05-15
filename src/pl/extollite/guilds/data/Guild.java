@@ -12,10 +12,7 @@ import static pl.extollite.guilds.manager.GuildManager.MemberLevel;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.function.Function;
-import java.util.function.ToDoubleFunction;
-import java.util.function.ToIntFunction;
-import java.util.function.ToLongFunction;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Getter
@@ -97,7 +94,7 @@ public class Guild {
         if(activeQuest != null)
             guilds.set(tag + ".active-quest", activeQuest.serialize());
         else
-            guilds.set(tag + ".active-quest", null);
+            guilds.remove(tag + ".active-quest");
         GuildManager.sortGuilds();
         guilds.save(true);
     }
@@ -158,7 +155,7 @@ public class Guild {
                 .replace("%exp%", String.valueOf(this.exp))
                 .replace("%need_exp%", String.valueOf(ConfigData.levels.get(this.level)))
                 .replace("%quest_name%", (activeQuest != null ? activeQuest.getName() : "null"))
-                .replace("%date%", new SimpleDateFormat(Guilds.getFormat()).format(questFinished))
+                .replace("%date%", getTimeString())
                 .replace("%members%", members.entrySet().stream().sorted(Map.Entry.<UUID, MemberLevel>comparingByValue().reversed()).map(o -> Guilds.getInstance().getServer().getOfflinePlayer(o.getKey()).getName() + ": " + o.getValue()).collect(Collectors.joining("\n ", "\n ", "")));
     }
 
@@ -181,6 +178,16 @@ public class Guild {
 
     public void setDeposit(double deposit) {
         this.deposit = deposit;
+    }
+
+    private String getTimeString() {
+        long millis = (long) (this.questFinished.getTime() + (ConfigData.quest_delay*3600000) - System.currentTimeMillis());
+        if(millis <= 0)
+            return "00:00:00";
+        String hms = String.format("%02d:%02d:%02d", TimeUnit.MILLISECONDS.toDays(millis),
+                TimeUnit.MILLISECONDS.toHours(millis) - TimeUnit.DAYS.toHours(TimeUnit.MILLISECONDS.toDays(millis)),
+                TimeUnit.MILLISECONDS.toMinutes(millis) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis)));
+        return hms;
     }
 }
 

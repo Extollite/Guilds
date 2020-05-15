@@ -13,7 +13,7 @@ public class InviteManager {
     private static final Map<Player, Player> invitations = new HashMap<>();
 
     public static boolean putInvitation(Player invited, Player inviting){
-        boolean put = invitations.putIfAbsent(invited, inviting) != null;
+        boolean put = invitations.putIfAbsent(invited, inviting) == null;
         if(put){
             Guilds.getInstance().getServer().getScheduler().scheduleDelayedTask(Guilds.getInstance(), () -> {
                 if(invitations.containsKey(invited)){
@@ -33,6 +33,8 @@ public class InviteManager {
 
     public static void acceptInvite(Player player){
         Player inviting = invitations.remove(player);
+        if(inviting == null)
+            return;
         Guild guild = GuildManager.getPlayerGuild(inviting);
         if(guild.getMembers().size() >= ConfigData.guild_max_size){
             inviting.sendMessage(ConfigData.prefix+ConfigData.invite_size);
@@ -46,6 +48,7 @@ public class InviteManager {
             return;
         }
         guild.addMember(player);
+        GuildManager.setPlayerGuild(player, guild);
         Guilds.getInstance().getServer().broadcastMessage(ConfigData.prefix+ConfigData.invite_success_announce.replace("%player%", player.getName()).replace("%tag%", guild.getTag()));
         guild.save();
     }

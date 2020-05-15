@@ -47,6 +47,7 @@ public class Guilds extends PluginBase {
         this.getServer().getPluginManager().registerEvents(new CreateWindowListener(), this);
         this.getServer().getPluginManager().registerEvents(new AcceptWindowListener(), this);
         this.getServer().getPluginManager().registerEvents(new BoardListener(), this);
+        this.getServer().getPluginManager().registerEvents(new InfoWindowListener(), this);
         this.getServer().getPluginManager().registerEvents(new ShopListener(), this);
         registerCommand();
         registerPlaceholders();

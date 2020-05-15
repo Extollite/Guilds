@@ -99,7 +99,6 @@ public class QuestWindowListener implements Listener {
             GuildManager.getPlayerGuild(event.getPlayer()).save(false);
             Map<Integer, Item> items = player.getInventory().all(item);
             if(!items.isEmpty()){
-                System.out.println("1sd");
                 for(Map.Entry<Integer, Item> itemInv : items.entrySet()){
                     if(amount >= itemInv.getValue().getCount()){
                         amount -= itemInv.getValue().getCount();
@@ -115,6 +114,7 @@ public class QuestWindowListener implements Listener {
                 }
             }
             player.sendAllInventories();
+            player.sendMessage(ConfigData.prefix+ConfigData.quest_collect_donate_success.replace("%name%", item.getName()).replace("%amount%", String.valueOf(amount)));
         } else if(event.getWindow() instanceof QuestPickWindow){
             FormResponseSimple response = (FormResponseSimple)event.getResponse();
             String name = response.getClickedButton().getText();

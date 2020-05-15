@@ -94,6 +94,7 @@ public class ConfigData {
     public static String quest_active_mob;
     public static String quest_active_break;
     public static String quest_active_collect;
+    public static String quest_collect_donate_success;
 
     public static String quest_pick_content;
 
@@ -204,6 +205,7 @@ public class ConfigData {
         quest_active_mob = lang.getString("quest-active-mob");
         quest_active_break = lang.getString("quest-active-break");
         quest_active_collect = lang.getString("quest-active-collect");
+        quest_collect_donate_success = lang.getString("quest-collect-donate-success");
 
         quest_collect_donate = lang.getString("quest-collect-donate");
         quest_collect_pick = lang.getString("quest-collect-pick");

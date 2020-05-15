@@ -26,7 +26,7 @@ public class LeaveCommand extends CommandManager {
     public boolean execute(CommandSender sender, String label, String[] args) {
         if (sender instanceof Player) {
             Player p = (Player) sender;
-            if (GuildManager.hasPlayerGuild(p)) {
+            if (!GuildManager.hasPlayerGuild(p)) {
                 p.sendMessage(ConfigData.prefix + ConfigData.cmd_info_no_guild);
                 return true;
             }

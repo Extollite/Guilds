@@ -9,6 +9,8 @@ quest-collect-pick: "Pick item to donate: "
 quest-collect-pick-amount: "Pick amount to donate: "
 
 quest-collect-donate: "Donate items"
+quest-collect-donate-success: "Successfuly donated %name% in amount of %amount%!"
+
 
 quest-pick-content: "Choose next quest: "
 
