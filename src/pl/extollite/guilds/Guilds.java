@@ -74,36 +74,56 @@ public class Guilds extends PluginBase {
     public void registerPlaceholders(){
         for(int i = 0; i < 10; i++){
             int finalI = i;
-            papi.staticPlaceholder("guild_top_tag_"+(finalI+1), () -> {
+            papi.staticPlaceholder("guild_top_tag_"+(finalI+1), (o) -> {
                 if(GuildManager.getSorted().size() > finalI){
                     return GuildManager.getSorted().get(finalI).getTag();
                 }
                 return "";
             }, 1, true);
-            papi.staticPlaceholder("guild_top_name_"+(finalI+1), () -> {
+            papi.staticPlaceholder("guild_top_name_"+(finalI+1), (o) -> {
                 if(GuildManager.getSorted().size() > finalI){
                     return GuildManager.getSorted().get(finalI).getFullName();
                 }
                 return "";
             }, 1, true);
-            papi.staticPlaceholder("guild_top_level_"+(finalI+1), () -> {
+            papi.staticPlaceholder("guild_top_level_"+(finalI+1), (o) -> {
                 if(GuildManager.getSorted().size() > finalI){
                     return GuildManager.getSorted().get(finalI).getLevel();
                 }
                 return "";
             }, 1, true);
-            papi.staticPlaceholder("guild_top_exp_"+(finalI+1), () -> {
+            papi.staticPlaceholder("guild_top_exp_"+(finalI+1), (o) -> {
                 if(GuildManager.getSorted().size() > finalI){
                     return GuildManager.getSorted().get(finalI).getExp();
                 }
                 return "";
             }, 1, true);
         }
-        papi.visitorSensitivePlaceholder("player_guild_tag", player -> GuildManager.getPlayerGuild(player).getTag());
-        papi.visitorSensitivePlaceholder("player_guild_name", player -> GuildManager.getPlayerGuild(player).getFullName());
-        papi.visitorSensitivePlaceholder("player_guild_level", player -> GuildManager.getPlayerGuild(player).getLevel());
-        papi.visitorSensitivePlaceholder("player_guild_exp", player -> GuildManager.getPlayerGuild(player).getExp());
-        papi.visitorSensitivePlaceholder("player_guild_rank", player -> GuildManager.getPlayerGuild(player).getMemberLevel(player));
+        papi.visitorSensitivePlaceholder("player_guild_tag", (player, o) -> {
+            if(GuildManager.hasPlayerGuild(player))
+                return GuildManager.getPlayerGuild(player).getTag();
+            return "";
+        });
+        papi.visitorSensitivePlaceholder("player_guild_name",(player, o) -> {
+            if(GuildManager.hasPlayerGuild(player))
+                return GuildManager.getPlayerGuild(player).getFullName();
+            return "";
+        });
+        papi.visitorSensitivePlaceholder("player_guild_level", (player, o) -> {
+            if(GuildManager.hasPlayerGuild(player))
+                return GuildManager.getPlayerGuild(player).getLevel();
+            return "";
+        });
+        papi.visitorSensitivePlaceholder("player_guild_exp", (player, o) -> {
+            if(GuildManager.hasPlayerGuild(player))
+                return GuildManager.getPlayerGuild(player).getExp();
+            return "";
+        });
+        papi.visitorSensitivePlaceholder("player_guild_rank", (player, o) -> {
+            if(GuildManager.hasPlayerGuild(player))
+                return GuildManager.getPlayerGuild(player).getMemberLevel(player);
+            return "";
+        });
     }
 
     private void loadImmunities(){
