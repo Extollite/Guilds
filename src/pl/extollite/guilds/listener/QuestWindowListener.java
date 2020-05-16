@@ -88,6 +88,7 @@ public class QuestWindowListener implements Listener {
             FormResponseCustom response = (FormResponseCustom) event.getResponse();
             String name = response.getLabelResponse(1);
             int amount = (int)response.getSliderResponse(2);
+            int amountConst = (int)response.getSliderResponse(2);
             if(amount == 0)
                 return;
             Item item = Item.fromString(name);
@@ -114,7 +115,7 @@ public class QuestWindowListener implements Listener {
                 }
             }
             player.sendAllInventories();
-            player.sendMessage(ConfigData.prefix+ConfigData.quest_collect_donate_success.replace("%name%", item.getName()).replace("%amount%", String.valueOf(amount)));
+            player.sendMessage(ConfigData.prefix+ConfigData.quest_collect_donate_success.replace("%name%", item.getName()).replace("%amount%", String.valueOf(amountConst)));
         } else if(event.getWindow() instanceof QuestPickWindow){
             FormResponseSimple response = (FormResponseSimple)event.getResponse();
             String name = response.getClickedButton().getText();

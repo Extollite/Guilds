@@ -15,7 +15,7 @@ public class QuestPickWindow extends FormWindowSimple {
     public QuestPickWindow(Guild guild) {
         super(ConfigData.board_quest, ConfigData.quest_pick_content);
         for(Quest quest : QuestManager.getQuests()){
-            if(guild.getLastQuest().equals(quest.getId()) && System.currentTimeMillis() - guild.getQuestFinished().getTime() < ConfigData.quest_delay*3600000)
+            if(guild.getLastQuest().equals(quest.getId()) && !guild.isCooldownEnded())
                 continue;
             this.addButton(new ElementButton(quest.getName()));
         }

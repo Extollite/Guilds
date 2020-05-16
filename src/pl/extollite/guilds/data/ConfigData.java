@@ -86,7 +86,11 @@ public class ConfigData {
     public static String cmd_create_in_guild;
     public static String cmd_info_no_guild;
 
+    public static String guild_full_info;
     public static String guild_info;
+    public static String guild_no_cooldown;
+    public static String guild_bonus_exp;
+    public static String guild_level_up;
 
     public static String quest_info;
 
@@ -112,6 +116,9 @@ public class ConfigData {
     public static String window_back;
     public static String window_accept;
     public static String window_decline;
+
+    public static String fly_active;
+    public static String fly_deactive;
 
     public static void init(){
         Config cfg = Guilds.getInstance().getConfig();
@@ -231,8 +238,15 @@ public class ConfigData {
         cmd_create_in_guild = lang.getString("cmd-create-in-guild");
         cmd_info_no_guild = lang.getString("cmd-info-no-guild");
 
+        guild_full_info = String.join("\n", lang.getStringList("guild-full-info"));
         guild_info = String.join("\n", lang.getStringList("guild-info"));
+        guild_no_cooldown = lang.getString("guild-no-cooldown");
+        guild_bonus_exp = lang.getString("guild-bonus-exp");
+        guild_level_up = lang.getString("guild-level-up");
 
         quest_info = String.join("\n", lang.getStringList("quest-info"));
+
+        fly_active = lang.getString("fly-active");
+        fly_deactive = lang.getString("fly-deactive");
     }
 }

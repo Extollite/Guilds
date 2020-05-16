@@ -1,6 +1,7 @@
 package pl.extollite.guilds.data;
 
 import cn.nukkit.Player;
+import cn.nukkit.potion.Effect;
 import cn.nukkit.utils.Config;
 import cn.nukkit.utils.ConfigSection;
 import lombok.Getter;
@@ -91,7 +92,7 @@ public class Guild {
             }
             guilds.set(tag + ".members", memberSection);
         }
-        if(activeQuest != null)
+        if (activeQuest != null)
             guilds.set(tag + ".active-quest", activeQuest.serialize());
         else
             guilds.remove(tag + ".active-quest");
@@ -104,6 +105,8 @@ public class Guild {
     }
 
     public void addExp(int exp) {
+        if (Guilds.hasBonusExp(this))
+            exp = (int) (exp * Guilds.getBonusExp(this));
         while (exp > 0) {
             if (level == 20)
                 return;
@@ -112,6 +115,12 @@ public class Guild {
                 exp = this.exp + exp - needExp;
                 this.exp = 0;
                 this.level++;
+                Guilds.getInstance().getServer().broadcastMessage(ConfigData.prefix+ConfigData.guild_level_up.replace("%level%", String.valueOf(this.level)).replace("%tag%", this.getTag()));
+                for (UUID uuid : members.keySet()) {
+                    Optional<Player> player = Guilds.getInstance().getServer().getPlayer(uuid);
+                    player.ifPresent(this::giveBonus);
+                }
+                this.save();
             } else {
                 this.exp += exp;
                 exp = 0;
@@ -123,9 +132,9 @@ public class Guild {
     public void finalizeQuest() {
         questFinished = new Date(System.currentTimeMillis());
         lastQuest = activeQuest.getId();
-        for(UUID uuid : members.keySet()){
+        for (UUID uuid : members.keySet()) {
             Optional<Player> player = Guilds.getInstance().getServer().getPlayer(uuid);
-            player.ifPresent(value -> value.sendMessage(ConfigData.prefix + ConfigData.quest_finished.replace("%name%", activeQuest.getName()).replace("%exp%", String.valueOf(activeQuest.getExp()))));
+            player.ifPresent(value -> value.sendMessage(ConfigData.prefix + ConfigData.quest_finished.replace("%name%", activeQuest.getName()).replace("%exp%", String.valueOf((int) (activeQuest.getExp() * (Guilds.hasBonusExp(this) ? Guilds.getBonusExp(this) : 1))))));
         }
         int exp = activeQuest.getExp();
         activeQuest = null;
@@ -147,7 +156,7 @@ public class Guild {
     }
 
     public String fullInfo() {
-        return ConfigData.guild_info.replace("%tag%", this.tag)
+        return ConfigData.guild_full_info.replace("%tag%", this.tag)
                 .replace("%name%", this.fullName)
                 .replace("%money%", String.valueOf(this.deposit))
                 .replace("%level%", String.valueOf(this.level))
@@ -156,7 +165,10 @@ public class Guild {
                 .replace("%need_exp%", String.valueOf(ConfigData.levels.get(this.level)))
                 .replace("%quest_name%", (activeQuest != null ? activeQuest.getName() : "null"))
                 .replace("%date%", getTimeString())
-                .replace("%members%", members.entrySet().stream().sorted(Map.Entry.<UUID, MemberLevel>comparingByValue().reversed()).map(o -> Guilds.getInstance().getServer().getOfflinePlayer(o.getKey()).getName() + ": " + o.getValue()).collect(Collectors.joining("\n ", "\n ", "")));
+                .replace("%members%", members.entrySet().stream().sorted(Map.Entry.<UUID, MemberLevel>comparingByValue().reversed()).map(o -> Guilds.getInstance().getServer().getOfflinePlayer(o.getKey()).getName() + ": " + o.getValue()).collect(Collectors.joining("\n ", "\n ", "")))
+                + (Guilds.hasImmunity(this) ? "\n" + ConfigData.guild_no_cooldown.replace("%time%", Guilds.getTimeLeftString(new Date(Guilds.getImmunity(this)))) : "")
+                + (Guilds.hasBonusExp(this) ? "\n" + ConfigData.guild_bonus_exp.replace("%time%", Guilds.getTimeLeftString(new Date(Guilds.getBonusExpTime(this)))).replace("%bonus%", String.valueOf(Guilds.getBonusExp(this))) : "")
+                ;
     }
 
     public String info() {
@@ -172,7 +184,7 @@ public class Guild {
     public boolean setActiveQuest(Quest activeQuest) {
         if (this.activeQuest != null)
             return false;
-        this.activeQuest = activeQuest;
+        this.activeQuest = activeQuest.clone();
         return true;
     }
 
@@ -181,13 +193,46 @@ public class Guild {
     }
 
     private String getTimeString() {
-        long millis = (long) (this.questFinished.getTime() + (ConfigData.quest_delay*3600000) - System.currentTimeMillis());
-        if(millis <= 0)
+        if (Guilds.hasImmunity(this))
+            return "00:00:00";
+        long millis = (long) (this.questFinished.getTime() + (ConfigData.quest_delay * 3600000) - System.currentTimeMillis());
+        if (millis <= 0)
             return "00:00:00";
         String hms = String.format("%02d:%02d:%02d", TimeUnit.MILLISECONDS.toDays(millis),
                 TimeUnit.MILLISECONDS.toHours(millis) - TimeUnit.DAYS.toHours(TimeUnit.MILLISECONDS.toDays(millis)),
                 TimeUnit.MILLISECONDS.toMinutes(millis) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis)));
         return hms;
+    }
+
+    public boolean isCooldownEnded() {
+        return System.currentTimeMillis() - this.getQuestFinished().getTime() > ConfigData.quest_delay * 3600000 || Guilds.hasImmunity(this);
+    }
+    
+    public void giveBonus(Player player){
+        if (this.getLevel() >= 5) {
+            player.addEffect(Effect.getEffect(Effect.REGENERATION).setDuration(1728000));
+        }
+        if (this.getLevel() >= 15) {
+            player.addEffect(Effect.getEffect(Effect.STRENGTH).setDuration(1728000));
+        }
+        if (this.getLevel() >= 20) {
+            player.addEffect(Effect.getEffect(Effect.HASTE).setDuration(1728000));
+        }
+    }
+
+    public void removeBonus(Player player){
+        if (this.getLevel() >= 5) {
+            if(player.hasEffect(Effect.REGENERATION) && player.getEffect(Effect.REGENERATION).getAmplifier() == 0)
+                player.removeEffect(Effect.REGENERATION);
+        }
+        if (this.getLevel() >= 15) {
+            if(player.hasEffect(Effect.STRENGTH) && player.getEffect(Effect.STRENGTH).getAmplifier() == 0)
+                player.removeEffect(Effect.STRENGTH);
+        }
+        if (this.getLevel() >= 20) {
+            if(player.hasEffect(Effect.HASTE) && player.getEffect(Effect.HASTE).getAmplifier() == 0)
+                player.removeEffect(Effect.HASTE);
+        }
     }
 }
 

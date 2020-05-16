@@ -11,6 +11,7 @@ import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.event.entity.EntityDeathEvent;
 import cn.nukkit.event.player.PlayerCommandPreprocessEvent;
 import cn.nukkit.event.player.PlayerJoinEvent;
+import cn.nukkit.event.player.PlayerQuitEvent;
 import cn.nukkit.item.enchantment.Enchantment;
 import cn.nukkit.potion.Effect;
 import cn.yescallop.essentialsnk.EssentialsAPI;
@@ -71,34 +72,16 @@ public class EventListener implements Listener {
         Player player = event.getPlayer();
         if (GuildManager.hasPlayerGuild(player)) {
             Guild guild = GuildManager.getPlayerGuild(player);
-            if (guild.getLevel() >= 5) {
-                if(player.getEffect(Effect.REGENERATION).getAmplifier() == 0){
-                    player.removeEffect(Effect.REGENERATION);
-                    player.addEffect(Effect.getEffect(Effect.REGENERATION).setDuration(1728000));
-                }
-            }
-            if (guild.getLevel() >= 15) {
-                if(player.getEffect(Effect.STRENGTH).getAmplifier() == 0){
-                    player.removeEffect(Effect.STRENGTH);
-                    player.addEffect(Effect.getEffect(Effect.STRENGTH).setDuration(1728000));
-                }
-            }
-            if (guild.getLevel() >= 20) {
-                if(player.getEffect(Effect.HASTE).getAmplifier() == 0){
-                    player.removeEffect(Effect.HASTE);
-                    player.addEffect(Effect.getEffect(Effect.HASTE).setDuration(1728000));
-                }
-            }
-        } else {
-            if(player.hasEffect(Effect.REGENERATION) && player.getEffect(Effect.REGENERATION).getAmplifier() == 0){
-                player.removeEffect(Effect.REGENERATION);
-            }
-            if(player.hasEffect(Effect.STRENGTH) && player.getEffect(Effect.STRENGTH).getAmplifier() == 0){
-                player.removeEffect(Effect.STRENGTH);
-            }
-            if(player.hasEffect(Effect.HASTE) && player.getEffect(Effect.HASTE).getAmplifier() == 0){
-                player.removeEffect(Effect.HASTE);
-            }
+            guild.giveBonus(player);
+        }
+    }
+
+    @EventHandler
+    public void onQuit(PlayerQuitEvent event) {
+        Player player = event.getPlayer();
+        if (GuildManager.hasPlayerGuild(player)) {
+            Guild guild = GuildManager.getPlayerGuild(player);
+            guild.removeBonus(player);
         }
     }
 
@@ -108,21 +91,23 @@ public class EventListener implements Listener {
 
     @EventHandler
     public void onPlayerCmd(PlayerCommandPreprocessEvent ev){
-        if(ev.isCancelled())
-            return;
         Player player = ev.getPlayer();
         if(player.isOp())
             return;
         String msg = ev.getMessage();
         msg = msg.trim();
         String[] cmd = msg.split("\\s+");
-        /*        this.getLogger().info(cmd[0].substring(1));*/
+/*        Guilds.getInstance().getLogger().info(cmd[0].substring(1));*/
         if(!GuildManager.hasPlayerGuild(player))
             return;
         if(GuildManager.getPlayerGuild(player).getLevel() < 10)
             return;
         if("fly".equalsIgnoreCase(cmd[0].substring(1))){
-            EssentialsAPI.getInstance().switchCanFly(player);
+            boolean fly = EssentialsAPI.getInstance().switchCanFly(player);
+            if(fly)
+                player.sendMessage(ConfigData.prefix+ConfigData.fly_active);
+            else
+                player.sendMessage(ConfigData.prefix+ConfigData.fly_deactive);
             ev.setCancelled();
         }
     }

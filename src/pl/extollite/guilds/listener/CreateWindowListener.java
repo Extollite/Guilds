@@ -27,7 +27,7 @@ public class CreateWindowListener implements Listener {
                 player.sendMessage(ConfigData.prefix+ConfigData.create_incorrect_tag.replace("%tag_size%", String.valueOf(ConfigData.tag_size)));
                 return;
             }
-            boolean nonalphanumeric = name.matches("[^A-Za-z0-9 ]");
+            boolean nonalphanumeric = name.matches("^.*[^a-zA-Z0-9 ].*$");
             if(nonalphanumeric || name.length() > ConfigData.name_size){
                 player.sendMessage(ConfigData.prefix+ConfigData.create_incorrect_name.replace("%name_size%", String.valueOf(ConfigData.name_size)));
                 return;

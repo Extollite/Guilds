@@ -93,13 +93,26 @@ cmd-info-no-guild: "You are not in any guild!"
 
 leave-success-announce: "%player% left guild %tag%."
 
-guild-info:
+guild-full-info:
   - "TAG: %tag%"
   - "Name: %name%"
   - "Current money: %money%"
   - "Level: %level%/%max_level%"
   - "Exp: %exp%/%need_exp%"
   - "Active quest: %quest_name%"
-  - "Last quest finished: %date%"
+  - "Last quest cooldown: %date%"
   - "Members: %members%"
 
+guild-info:
+  - "TAG: %tag%"
+  - "Name: %name%"
+  - "Level: %level%/%max_level%"
+  - "Exp: %exp%/%need_exp%"
+  - "Members: %members%"
+
+guild-no-cooldown: "No cooldown left: %time%"
+guild-bonus-exp: "Bonus exp: x%bonus% for %time%"
+guild-level-up: "Guild %tag% has now level %level%!"
+
+fly-active: "Fly active!"
+fly-deactive: "Fly deactivate!"

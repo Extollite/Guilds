@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.StringJoiner;
 
 @Getter
-public abstract class Quest {
+public abstract class Quest implements Cloneable {
     private String id;
     private QuestType type;
     private String name;
@@ -56,5 +56,16 @@ public abstract class Quest {
                 .replace("%exp%", String.valueOf(exp))
                 .replace("%type%", type.toString())
                 .replace("%components%", getComponentsString());
+    }
+
+    @Override
+    public Quest clone() {
+        try {
+            Quest q = (Quest) super.clone();
+            q.components = new HashMap<>(components);
+            return q;
+        } catch (CloneNotSupportedException e) {
+            return null;
+        }
     }
 }

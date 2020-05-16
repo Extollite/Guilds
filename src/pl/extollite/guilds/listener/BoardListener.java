@@ -19,6 +19,7 @@ import pl.extollite.guilds.window.manage.*;
 import pl.extollite.guilds.window.quest.QuestActiveWindow;
 import pl.extollite.guilds.window.quest.QuestPickWindow;
 
+import java.util.Optional;
 import java.util.UUID;
 
 public class BoardListener implements Listener {
@@ -30,6 +31,8 @@ public class BoardListener implements Listener {
         if (event.getWindow() instanceof BoardGuildWindow) {
             FormResponseSimple response = (FormResponseSimple) event.getResponse();
             Guild guild = GuildManager.getPlayerGuild(player);
+            if(response.getClickedButton().getText().equals(ConfigData.window_close))
+                return;
             switch (response.getClickedButtonId()) {
                 case 0:
                     player.showFormWindow(new FullInfoGuildWindow(guild, player));
@@ -103,6 +106,8 @@ public class BoardListener implements Listener {
             guild.removeMember(uuid);
             GuildManager.removePlayerGuild(uuid);
             guild.save();
+            Optional<Player> optPlayer = Guilds.getInstance().getServer().getPlayer(uuid);
+            optPlayer.ifPresent(guild::removeBonus);
             Guilds.getInstance().getServer().broadcastMessage(ConfigData.prefix+ConfigData.leave_success_announce.replace("%player%", player.getName()).replace("%tag%", guild.getTag()));
         } else if (event.getWindow() instanceof PromotePickGuildWindow) {
             FormResponseSimple response = (FormResponseSimple) event.getResponse();
@@ -128,13 +133,15 @@ public class BoardListener implements Listener {
                 Guild guild = GuildManager.getPlayerGuild(player);
                 for(UUID uuid : guild.getMembers().keySet()){
                     GuildManager.removePlayerGuild(uuid);
+                    Optional<Player> optPlayer = Guilds.getInstance().getServer().getPlayer(uuid);
+                    optPlayer.ifPresent(guild::removeBonus);
                 }
                 GuildManager.removeGuild(guild);
                 Config guilds = new Config(Guilds.getInstance().getDataFolder() + "/guilds.yml", Config.YAML);
                 guilds.remove(guild.getTag());
                 guilds.save(true);
                 player.sendMessage(ConfigData.prefix+ConfigData.delete_success.replace("%name%", guild.getFullName()).replace("%tag%", guild.getTag()));
-                Guilds.getInstance().getServer().broadcastMessage(ConfigData.prefix+ConfigData.delete_success_announce.replace("%name%", guild.getFullName()).replace("%tag%", guild.getTag()));
+                Guilds.getInstance().getServer().broadcastMessage(ConfigData.prefix+ConfigData.delete_success_announce.replace("%name%", guild.getFullName()).replace("%tag%", guild.getTag()).replace("%player%", player.getName()));
             }
         }
     }

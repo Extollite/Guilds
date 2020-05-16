@@ -1,6 +1,7 @@
 package pl.extollite.guilds;
 
 import cn.nukkit.plugin.PluginBase;
+import cn.nukkit.utils.Config;
 import cn.nukkit.utils.TextFormat;
 import com.creeperface.nukkit.placeholderapi.api.PlaceholderAPI;
 import pl.extollite.guilds.command.*;
@@ -12,6 +13,7 @@ import pl.extollite.guilds.manager.GuildManager;
 import pl.extollite.guilds.manager.QuestManager;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 public class Guilds extends PluginBase {
     private static final String format = "yyyy-MM-dd HH:mm:ss Z";
@@ -26,8 +28,9 @@ public class Guilds extends PluginBase {
         return instance;
     }
 
-    public static List<Guild> immunity = new ArrayList<>();
-
+    private static final Map<String, Long> immunity = new HashMap<>();
+    private static final Map<String, Map.Entry<Float, Long>> bonusExp = new HashMap<>();
+    
     private GuildCommand guildCommand;
 
     private PlaceholderAPI papi = PlaceholderAPI.getInstance();
@@ -42,6 +45,8 @@ public class Guilds extends PluginBase {
 
         QuestManager.init();
         GuildManager.init();
+        loadImmunities();
+        loadBonusExp();
         this.getServer().getPluginManager().registerEvents(new EventListener(), this);
         this.getServer().getPluginManager().registerEvents(new QuestWindowListener(), this);
         this.getServer().getPluginManager().registerEvents(new CreateWindowListener(), this);
@@ -62,6 +67,8 @@ public class Guilds extends PluginBase {
         guildCommand.registerCommand(new TopCommand());
         guildCommand.registerCommand(new InfoCommand());
         guildCommand.registerCommand(new LeaveCommand());
+        this.getServer().getCommandMap().register("guild-nocooldown", new NoCooldownCommand());
+        this.getServer().getCommandMap().register("guild-bonusexp", new BonusExpCommand());
     }
 
     public void registerPlaceholders(){
@@ -99,11 +106,75 @@ public class Guilds extends PluginBase {
         papi.visitorSensitivePlaceholder("player_guild_rank", player -> GuildManager.getPlayerGuild(player).getMemberLevel(player));
     }
 
-    public static void putImmunity(Guild guild) {
-        immunity.add(guild);
+    private void loadImmunities(){
+        Config immunities = new Config(Guilds.getInstance().getDataFolder()+"/data-cooldown.yml", Config.YAML);
+        for(String key : immunities.getKeys(false)){
+            if(GuildManager.getGuildByTag(key) != null){
+                long time = immunities.getLong(key);
+                if(time > System.currentTimeMillis())
+                    Guilds.immunity.put(key, time);
+            }
+        }
+    }
+
+    public static void putImmunity(Guild guild, float days) {
+        immunity.put(guild.getTag(), (long) (System.currentTimeMillis()+(days*86400000)));
+        Config immunities = new Config(Guilds.getInstance().getDataFolder()+"/data-cooldown.yml", Config.YAML);
+        immunities.set(guild.getTag(), immunity.get(guild.getTag()));
+        immunities.save();
     }
 
     public static boolean hasImmunity(Guild guild) {
-        return immunity.contains(guild);
+        if(immunity.containsKey(guild.getTag()))
+            return immunity.get(guild.getTag()) > System.currentTimeMillis();
+        return false;
+    }
+
+    public static long getImmunity(Guild guild){
+        return immunity.get(guild.getTag());
+    }
+
+    public static String getTimeLeftString(Date date) {
+        long millis = date.getTime() - System.currentTimeMillis();
+        if(millis <= 0)
+            return "00:00:00";
+        String hms = String.format("%02d:%02d:%02d", TimeUnit.MILLISECONDS.toDays(millis),
+                TimeUnit.MILLISECONDS.toHours(millis) - TimeUnit.DAYS.toHours(TimeUnit.MILLISECONDS.toDays(millis)),
+                TimeUnit.MILLISECONDS.toMinutes(millis) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis)));
+        return hms;
+    }
+
+    private void loadBonusExp(){
+        Config exp = new Config(Guilds.getInstance().getDataFolder()+"/data-exp.yml", Config.YAML);
+        for(String key : exp.getKeys(false)){
+            if(GuildManager.getGuildByTag(key) != null){
+                long time = exp.getLong(key+".time");
+                float amount = (float) exp.getDouble(key+".exp");
+                if(time > System.currentTimeMillis())
+                    Guilds.bonusExp.put(key, new AbstractMap.SimpleImmutableEntry<>(amount, time));
+            }
+        }
+    }
+
+    public static void putBonusExp(Guild guild, float amount, float days) {
+        bonusExp.put(guild.getTag(), new AbstractMap.SimpleImmutableEntry<>(amount, (long) (System.currentTimeMillis()+(days*86400000))));
+        Config exp = new Config(Guilds.getInstance().getDataFolder()+"/data-exp.yml", Config.YAML);
+        exp.set(guild.getTag()+".time", bonusExp.get(guild.getTag()).getValue());
+        exp.set(guild.getTag()+".exp", bonusExp.get(guild.getTag()).getKey());
+        exp.save();
+    }
+
+    public static boolean hasBonusExp(Guild guild) {
+        if(bonusExp.containsKey(guild.getTag()))
+            return bonusExp.get(guild.getTag()).getValue() > System.currentTimeMillis();
+        return false;
+    }
+
+    public static float getBonusExp(Guild guild){
+        return bonusExp.get(guild.getTag()).getKey();
+    }
+
+    public static long getBonusExpTime(Guild guild){
+        return bonusExp.get(guild.getTag()).getValue();
     }
 }
