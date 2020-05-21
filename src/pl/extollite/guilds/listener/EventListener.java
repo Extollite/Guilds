@@ -37,8 +37,9 @@ public class EventListener implements Listener {
                 if (quest != null && quest.getType() == QuestType.DESTROY) {
                     if (((QuestIdMeta) quest).removeComponent(event.getBlock().getId(), event.getBlock().getDamage())) {
                         finlizeQuest(event.getPlayer());
+                    } else {
+                        GuildManager.getPlayerGuild(event.getPlayer()).save(false);
                     }
-                    GuildManager.getPlayerGuild(event.getPlayer()).save(false);
                 }
             }
         }
@@ -58,8 +59,9 @@ public class EventListener implements Listener {
                         if (quest != null && quest.getType() == QuestType.MOB) {
                             if (quest.removeComponent(entity.getNetworkId())) {
                                 finlizeQuest(player);
+                            } else {
+                                GuildManager.getPlayerGuild(player).save(false);
                             }
-                            GuildManager.getPlayerGuild(player).save(false);
                         }
                     }
                 }

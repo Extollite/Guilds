@@ -72,6 +72,7 @@ public class ConfigData {
     public static String shop_content;
     public static String shop_price;
     public static String shop_not_enough_money;
+    public static String shop_level;
 
     public static String donate_amount;
     public static String donate_success;
@@ -199,6 +200,7 @@ public class ConfigData {
         shop_content = lang.getString("shop-content");
         shop_price = lang.getString("shop-price");
         shop_not_enough_money = lang.getString("shop-not-enough-money");
+        shop_level = lang.getString("shop-level");
 
         donate_amount = lang.getString("donate-amount");
         donate_success = lang.getString("donate-success");

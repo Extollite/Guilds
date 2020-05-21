@@ -78,7 +78,7 @@ public class Guild {
     }
 
     public void save(boolean all) {
-        Config guilds = new Config(Guilds.getInstance().getDataFolder() + "/guilds.yml", Config.YAML);
+        Config guilds = GuildManager.getGuildsConfig();
         if (all) {
             guilds.set(tag + ".name", fullName);
             guilds.set(tag + ".deposit", deposit);
@@ -95,7 +95,7 @@ public class Guild {
         if (activeQuest != null)
             guilds.set(tag + ".active-quest", activeQuest.serialize());
         else
-            guilds.remove(tag + ".active-quest");
+            guilds.set(tag + ".active-quest", "null");
         GuildManager.sortGuilds();
         guilds.save(true);
     }
@@ -120,7 +120,6 @@ public class Guild {
                     Optional<Player> player = Guilds.getInstance().getServer().getPlayer(uuid);
                     player.ifPresent(this::giveBonus);
                 }
-                this.save();
             } else {
                 this.exp += exp;
                 exp = 0;
@@ -153,6 +152,7 @@ public class Guild {
         if (amount <= 0)
             return;
         deposit += amount;
+        this.save();
     }
 
     public String fullInfo() {

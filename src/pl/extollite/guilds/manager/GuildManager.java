@@ -11,7 +11,6 @@ import pl.extollite.guilds.quest.Quest;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toMap;
@@ -46,27 +45,36 @@ public class GuildManager {
 
     private static List<Guild> sorted;
 
+    private static Config guildsConfig;
+
+    public static Config getGuildsConfig() {
+        return guildsConfig;
+    }
+
     public static void init() {
-        Config guilds = new Config(Guilds.getInstance().getDataFolder() + "/guilds.yml", Config.YAML);
-        for (String tag : guilds.getKeys(false)) {
-            String name = guilds.getString(tag + ".name");
-            double depsite = guilds.getDouble(tag + ".deposit");
-            String lastQuest = guilds.getString(tag + ".last-quest");
+        GuildManager.guildsConfig = new Config(Guilds.getInstance().getDataFolder() + "/guilds.yml", Config.YAML);
+        for (String tag : guildsConfig.getKeys(false)) {
+            String name = guildsConfig.getString(tag + ".name");
+            double depsite = guildsConfig.getDouble(tag + ".deposit");
+            String lastQuest = guildsConfig.getString(tag + ".last-quest");
             Date questFinished = new Date(System.currentTimeMillis());
             try {
-                questFinished = new SimpleDateFormat(Guilds.getFormat()).parse(guilds.getString(tag + ".quest-finished"));
+                questFinished = new SimpleDateFormat(Guilds.getFormat()).parse(guildsConfig.getString(tag + ".quest-finished"));
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            int level = guilds.getInt(tag + ".level");
-            int exp = guilds.getInt(tag + ".exp");
+            int level = guildsConfig.getInt(tag + ".level");
+            int exp = guildsConfig.getInt(tag + ".exp");
             Quest activeQuest = null;
-            if (guilds.exists(tag + ".active-quest"))
-                activeQuest = QuestManager.serializeQuest(guilds, tag + ".active-quest");
+            if (guildsConfig.exists(tag + ".active-quest")){
+                if(!guildsConfig.getString(tag + ".active-quest").equals("null")){
+                    activeQuest = QuestManager.serializeQuest(guildsConfig, tag + ".active-quest");
+                }
+            }
             Guild guild = new Guild(name, tag, depsite, activeQuest, lastQuest, questFinished, level, exp);
-            for (String uuidString : guilds.getSection(tag + ".members").getKeys(false)) {
+            for (String uuidString : guildsConfig.getSection(tag + ".members").getKeys(false)) {
                 UUID uuid = UUID.fromString(uuidString);
-                guild.addMember(uuid, MemberLevel.fromId(guilds.getInt(tag + ".members." + uuidString)));
+                guild.addMember(uuid, MemberLevel.fromId(guildsConfig.getInt(tag + ".members." + uuidString)));
                 players.put(uuid, guild);
             }
             GuildManager.guilds.put(guild.getTag(), guild);
@@ -131,7 +139,7 @@ public class GuildManager {
     }
 
     public static void removeGuild(Guild guild) {
-        guilds.remove(guild.getTag());
+        guildsConfig.remove(guild.getTag());
         sortGuilds();
     }
 

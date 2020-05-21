@@ -48,7 +48,11 @@ public class BoardListener implements Listener {
                     player.showFormWindow(new DonateGuildWindow(player));
                     break;
                 case 3:
-                    player.showFormWindow(new ShopGuildWindow(guild));
+                    if(guild.getLevel() >= 5){
+                        player.showFormWindow(new ShopGuildWindow(guild));
+                    } else {
+                        player.sendMessage(ConfigData.prefix+ConfigData.shop_level);
+                    }
                     break;
                 case 4:
                     player.showFormWindow(new InviteGuildWindow());
@@ -73,7 +77,6 @@ public class BoardListener implements Listener {
             float amount = response.getSliderResponse(0);
             if(amount > 0 && EconomyAPI.getInstance().reduceMoney(player, amount) == EconomyAPI.RET_SUCCESS){
                 GuildManager.getPlayerGuild(player).donate(amount);
-                GuildManager.getPlayerGuild(player).save();
                 player.sendMessage(ConfigData.prefix+ConfigData.donate_success.replace("%money%", String.valueOf(amount)));
                 return;
             }
@@ -137,7 +140,7 @@ public class BoardListener implements Listener {
                     optPlayer.ifPresent(guild::removeBonus);
                 }
                 GuildManager.removeGuild(guild);
-                Config guilds = new Config(Guilds.getInstance().getDataFolder() + "/guilds.yml", Config.YAML);
+                Config guilds = GuildManager.getGuildsConfig();
                 guilds.remove(guild.getTag());
                 guilds.save(true);
                 player.sendMessage(ConfigData.prefix+ConfigData.delete_success.replace("%name%", guild.getFullName()).replace("%tag%", guild.getTag()));

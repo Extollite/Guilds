@@ -86,6 +86,7 @@ guild-info-content: "Choose guild to show info:"
 shop-content: "What you want to buy today? Your guild money is %money%."
 shop-price: "Price: "
 shop-not-enough-money: "Your guild don't have enough money!"
+shop-level: "Your guild need 5 level to have access to shop!"
 
 cmd-create-in-guild: "You are in guild!"
 
